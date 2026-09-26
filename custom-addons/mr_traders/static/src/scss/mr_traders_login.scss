@@ -1,0 +1,106 @@
+// =============================================================
+// MR Traders ERP — Login Page Styles (SCSS)
+// =============================================================
+// Copyright (C) 2026 MR Traders
+//
+// Customizes the Odoo web login page (/web/login)
+// =============================================================
+
+// ── Brand variables ──────────────────────────────────────────
+$mr-primary:   #1a3c5e;
+$mr-secondary: #c8a84b;
+$mr-dark:      #0d2136;
+
+// ── Login Page Background ────────────────────────────────────
+.o_login_screen {
+    background: linear-gradient(135deg, $mr-dark 0%, $mr-primary 60%, lighten($mr-primary, 10%) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+// ── Login Card ────────────────────────────────────────────────
+.o_login_screen .o_login_form_container,
+.oe_login_form {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 2.5rem;
+    max-width: 420px;
+    width: 100%;
+
+    // Company/logo area
+    .oe_login_logo {
+        text-align: center;
+        margin-bottom: 1.5rem;
+
+        img {
+            max-height: 80px;
+            max-width: 220px;
+            object-fit: contain;
+        }
+    }
+
+    // "MR Traders ERP" title below logo
+    &::before {
+        content: "MR Traders ERP";
+        display: block;
+        text-align: center;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: $mr-primary;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+}
+
+// ── Login Button ──────────────────────────────────────────────
+.oe_login_form .btn-primary,
+.o_login_form .btn-primary {
+    background-color: $mr-primary;
+    border-color: $mr-primary;
+    width: 100%;
+    padding: 0.65rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-radius: 6px;
+    transition: background-color 0.2s, transform 0.1s;
+
+    &:hover {
+        background-color: darken($mr-primary, 8%);
+        border-color: darken($mr-primary, 8%);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+// ── Input Fields ──────────────────────────────────────────────
+.oe_login_form .form-control,
+.o_login_form .form-control {
+    border-radius: 6px;
+    border-color: #d0dbe6;
+    padding: 0.6rem 0.9rem;
+
+    &:focus {
+        border-color: $mr-primary;
+        box-shadow: 0 0 0 3px rgba($mr-primary, 0.15);
+    }
+}
+
+// ── Footer tagline ────────────────────────────────────────────
+.o_login_screen::after {
+    content: "Powered by MR Traders ERP";
+    position: fixed;
+    bottom: 1rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.78rem;
+    letter-spacing: 0.5px;
+}

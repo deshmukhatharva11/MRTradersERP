@@ -1,0 +1,85 @@
+# =============================================================
+# MR Traders ERP — Docker Compose
+# Odoo 19.0 Community Edition (built from source)
+# =============================================================
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: mrtraders_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mrtraders_dev}
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odoo_secret}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - mrtraders_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-odoo} -d ${POSTGRES_DB:-mrtraders_dev}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ── Odoo (built from source) ─────────────────────────────────
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: mrtraders_odoo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${ODOO_PORT:-8069}:8069"      # Main web interface
+      - "${ODOO_LONGPOLL_PORT:-8072}:8072"  # Longpolling (live chat, bus)
+    environment:
+      # Database
+      HOST: db
+      PORT: 5432
+      USER: ${POSTGRES_USER:-odoo}
+      PASSWORD: ${POSTGRES_PASSWORD:-odoo_secret}
+      # Odoo
+      ODOO_DATABASE: ${POSTGRES_DB:-mrtraders_dev}
+    volumes:
+      # Odoo source — mounted read-write so you can edit live
+      - ./odoo:/opt/odoo/odoo
+      # Custom addons — your MR Traders-specific modules
+      - ./custom-addons:/opt/odoo/custom-addons
+      # Config file
+      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
+      # Persistent data (filestore, sessions)
+      - odoo_data:/var/lib/odoo
+      # Logs
+      - odoo_logs:/var/log/odoo
+    networks:
+      - mrtraders_net
+    command: >
+      odoo
+      --config=/etc/odoo/odoo.conf
+      --db_host=db
+      --db_port=5432
+      --db_user=${POSTGRES_USER:-odoo}
+      --db_password=${POSTGRES_PASSWORD:-odoo_secret}
+
+# ── Named volumes ────────────────────────────────────────────
+volumes:
+  pgdata:
+    name: mrtraders_pgdata
+  odoo_data:
+    name: mrtraders_odoo_data
+  odoo_logs:
+    name: mrtraders_odoo_logs
+
+# ── Networks ─────────────────────────────────────────────────
+networks:
+  mrtraders_net:
+    name: mrtraders_network
+    driver: bridge

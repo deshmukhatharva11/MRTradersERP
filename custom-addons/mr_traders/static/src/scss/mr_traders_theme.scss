@@ -1,0 +1,94 @@
+// =============================================================
+// MR Traders ERP — Backend Theme Overrides (SCSS)
+// =============================================================
+// Copyright (C) 2026 MR Traders
+//
+// HOW TO FIND Odoo variables to override:
+//   odoo/addons/web/static/src/scss/primary_variables.scss
+//   odoo/addons/web/static/src/scss/bootstrap_overrides.scss
+// =============================================================
+
+// ── MR Traders Brand Colors ───────────────────────────────────
+// Replace these hex values with your official brand palette
+$mr-primary:    #1a3c5e;   // Deep navy blue
+$mr-secondary:  #c8a84b;   // Gold accent
+$mr-accent:     #e8f0f7;   // Light blue tint
+$mr-dark:       #0d2136;   // Dark navy
+$mr-text:       #2c3e50;   // Body text
+
+// ── Override Odoo Primary Variables ───────────────────────────
+// These map to Odoo's internal color system
+$o-brand-primary:       $mr-primary;
+$o-brand-secondary:     $mr-secondary;
+
+// ── Navbar / Top Bar ─────────────────────────────────────────
+.o_main_navbar {
+    background-color: $mr-primary !important;
+    border-bottom: 2px solid $mr-secondary;
+
+    .o_menu_brand {
+        color: #ffffff !important;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    // Nav icons color
+    > ul > li > a {
+        color: rgba(255, 255, 255, 0.9) !important;
+
+        &:hover {
+            color: $mr-secondary !important;
+            background-color: rgba($mr-dark, 0.3) !important;
+        }
+    }
+}
+
+// ── App Switcher / Home Menu ──────────────────────────────────
+.o_home_menu {
+    background: linear-gradient(135deg, $mr-dark 0%, $mr-primary 100%);
+
+    .o_app {
+        &:hover .o_app_icon {
+            filter: brightness(1.2);
+        }
+
+        .o_app_name {
+            color: rgba(255, 255, 255, 0.95);
+        }
+    }
+}
+
+// ── Sidebar (Control Panel) ───────────────────────────────────
+.o_web_client .o_action_manager {
+    .o_control_panel {
+        // Subtle brand accent on breadcrumbs
+        .o_breadcrumb .o_back_button {
+            color: $mr-primary;
+        }
+    }
+}
+
+// ── Buttons ───────────────────────────────────────────────────
+.btn-primary {
+    background-color: $mr-primary;
+    border-color: $mr-primary;
+
+    &:hover, &:focus {
+        background-color: darken($mr-primary, 8%);
+        border-color: darken($mr-primary, 8%);
+    }
+}
+
+// ── Kanban / Card accents ─────────────────────────────────────
+.o_kanban_view {
+    .o_kanban_group_header {
+        border-bottom: 2px solid $mr-secondary;
+    }
+}
+
+// ── Status bar ───────────────────────────────────────────────
+.o_statusbar_status .o_arrow_button.btn-primary {
+    background-color: $mr-secondary;
+    border-color: darken($mr-secondary, 5%);
+    color: $mr-dark;
+}

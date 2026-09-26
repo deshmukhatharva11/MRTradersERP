@@ -1,0 +1,70 @@
+# ── Secrets & Local Config ────────────────────────────────────
+.env
+*.env.local
+
+# ── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.eggs/
+*.egg-info/
+*.egg
+dist/
+build/
+
+# ── Odoo Runtime / Generated ─────────────────────────────────
+# Do NOT commit Odoo's filestore or session data
+/odoo/.git/
+odoo_data/
+var/
+filestore/
+sessions/
+*.log
+*.log.*
+
+# ── IDE / Editor ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Node / Less ───────────────────────────────────────────────
+node_modules/
+npm-debug.log
+
+# ── Docker ───────────────────────────────────────────────────
+# Keep docker-compose.override.yml out of Git if you use one
+docker-compose.override.yml
+
+# ── OS ────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ── Test / Coverage ───────────────────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# ── Compiled translations ─────────────────────────────────────
+*.mo
