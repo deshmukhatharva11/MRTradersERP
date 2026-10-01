@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="mr_traders_web_layout" inherit_id="web.layout">
+        <xpath expr="//title" position="replace">
+            <title t-esc="title or 'MR Traders ERP'"/>
+        </xpath>
+        <xpath expr="//link[@rel='shortcut icon']" position="replace">
+            <link type="image/svg+xml" rel="icon" href="/mr_traders/static/src/img/mr_traders_favicon.svg"/>
+        </xpath>
+    </template>
+
+    <template id="mr_traders_login_layout" inherit_id="web.login_layout">
+        <xpath expr="//div[@style='max-width: 300px;']//img" position="attributes">
+            <attribute name="t-attf-src">/mr_traders/static/src/img/mr_traders_favicon.svg</attribute>
+            <attribute name="alt">MR Traders ERP</attribute>
+        </xpath>
+        <xpath expr="//a[contains(@href, 'odoo.com')]" position="replace">
+            <span>Powered by CodeZilla</span>
+        </xpath>
+    </template>
+
+    <template id="mr_traders_brand_promotion_message" inherit_id="web.brand_promotion_message">
+        <xpath expr="//t[@t-set='odoo_logo']" position="replace">
+            <t t-set="odoo_logo"><span>CodeZilla</span></t>
+        </xpath>
+    </template>
+</odoo>

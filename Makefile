@@ -11,7 +11,7 @@ ODOO_CONTAINER=mrtraders_odoo
 DB_CONTAINER=mrtraders_db
 DB_NAME?=mrtraders_dev
 
-.PHONY: help start stop restart rebuild logs shell db-shell \
+.PHONY: help setup start stop restart rebuild logs shell db-shell \
         update-addon init-db drop-db reset-db build-prod
 
 # ── Default target ────────────────────────────────────────────
@@ -19,6 +19,7 @@ help:
 	@echo ""
 	@echo "  MR Traders ERP — Available Commands"
 	@echo "  ─────────────────────────────────────────────────"
+	@echo "  make setup          First-time build, start, and database setup"
 	@echo "  make start          Start all containers (detached)"
 	@echo "  make stop           Stop all containers"
 	@echo "  make restart        Restart Odoo container only"
@@ -35,8 +36,10 @@ help:
 
 # ── Start / Stop ──────────────────────────────────────────────
 start:
-	$(COMPOSE) up -d
+	$(COMPOSE) up -d --build
 	@echo "✅  MR Traders ERP running → http://localhost:8069"
+
+setup: start init-db
 
 stop:
 	$(COMPOSE) down
@@ -64,14 +67,14 @@ db-shell:
 # ── Database management ───────────────────────────────────────
 init-db:
 	$(COMPOSE) exec $(ODOO_CONTAINER) \
-		python /opt/odoo/odoo/odoo-bin \
+		sh -c 'python /opt/odoo/odoo/odoo-bin \
 		--config=/etc/odoo/odoo.conf \
 		--db_host=db \
-		--db_user=odoo \
-		--db_password=odoo_secret \
+		--db_user="$$USER" \
+		--db_password="$$PASSWORD" \
 		-d $(DB_NAME) \
 		--init=base,web,mr_traders \
-		--stop-after-init
+		--stop-after-init'
 	@echo "✅  Database '$(DB_NAME)' initialised."
 
 drop-db:
@@ -88,14 +91,14 @@ ifndef ADDON
 	$(error "Usage: make update-addon ADDON=mr_traders")
 endif
 	$(COMPOSE) exec $(ODOO_CONTAINER) \
-		python /opt/odoo/odoo/odoo-bin \
+		sh -c 'python /opt/odoo/odoo/odoo-bin \
 		--config=/etc/odoo/odoo.conf \
 		--db_host=db \
-		--db_user=odoo \
-		--db_password=odoo_secret \
+		--db_user="$$USER" \
+		--db_password="$$PASSWORD" \
 		-d $(DB_NAME) \
 		--update=$(ADDON) \
-		--stop-after-init
+		--stop-after-init'
 	@echo "✅  Addon '$(ADDON)' updated."
 
 # ── Production image ─────────────────────────────────────────

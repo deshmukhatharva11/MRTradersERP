@@ -93,24 +93,21 @@ This will:
 ### 5. Start the development stack
 
 ```bash
-make start
-# — or —
 docker compose up -d --build
 ```
 
 ### 6. Initialize the database
 
 ```bash
-make init-db
-# — or manually —
-docker compose exec mrtraders_odoo \
-  python /opt/odoo/odoo/odoo-bin \
+docker compose exec mrtraders_odoo sh -c 'python /opt/odoo/odoo/odoo-bin \
   --config=/etc/odoo/odoo.conf \
-  --db_host=db --db_user=odoo --db_password=odoo_secret \
+  --db_host=db --db_user="$USER" --db_password="$PASSWORD" \
   -d mrtraders_dev \
   --init=base,web,mr_traders \
-  --stop-after-init
+  --stop-after-init'
 ```
+
+With GNU Make installed, `make setup` runs both steps. After the first-time initialization, start the stack with `docker compose up -d`.
 
 ### 7. Open in browser
 

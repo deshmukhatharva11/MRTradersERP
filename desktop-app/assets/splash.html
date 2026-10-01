@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self' 'unsafe-inline';">
+  <title>MR Traders ERP</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #1a1a2e, #16213e);
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      -webkit-app-region: drag;
+    }
+
+    .container {
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #e94560, #ff6b6b);
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 8px 32px rgba(233, 69, 96, 0.3);
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #8892b0;
+      margin-bottom: 32px;
+    }
+
+    /* ── Loading spinner ────────────────────────────────── */
+    .spinner-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(233, 69, 96, 0.2);
+      border-top-color: #e94560;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .status-text {
+      font-size: 13px;
+      color: #8892b0;
+    }
+
+    /* ── Offline state ──────────────────────────────────── */
+    .offline-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.7;
+    }
+
+    .offline-message {
+      font-size: 14px;
+      color: #ff6b6b;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .retry-button {
+      -webkit-app-region: no-drag;
+      padding: 10px 28px;
+      background: linear-gradient(135deg, #e94560, #c23152);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(233, 69, 96, 0.3);
+    }
+
+    .retry-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+    }
+
+    .retry-button:active {
+      transform: translateY(0);
+    }
+
+    .hidden { display: none !important; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .version {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      font-size: 11px;
+      color: #4a4a6a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">MR</div>
+    <h1>MR Traders ERP</h1>
+    <p class="subtitle">Enterprise Resource Planning</p>
+
+    <!-- Loading state -->
+    <div id="loading" class="spinner-container">
+      <div class="spinner"></div>
+      <p class="status-text">Connecting to server…</p>
+    </div>
+
+    <!-- Offline state -->
+    <div id="offline" class="spinner-container hidden">
+      <div class="offline-icon">📡</div>
+      <p class="offline-message">
+        Unable to reach the server.<br>
+        Please check your internet connection.
+      </p>
+      <button class="retry-button" onclick="retry()">Retry Connection</button>
+    </div>
+  </div>
+
+  <div class="version" id="version-label"></div>
+
+  <script>
+    // Determine mode from URL query
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode') || 'loading';
+
+    if (mode === 'offline') {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('offline').classList.remove('hidden');
+    }
+
+    function retry() {
+      document.getElementById('offline').classList.add('hidden');
+      document.getElementById('loading').classList.remove('hidden');
+      // Tell main process to retry (via location reload — main process intercepts)
+      window.location.reload();
+    }
+
+    // Show version if erpBridge is available
+    if (window.erpBridge && window.erpBridge.getVersion) {
+      window.erpBridge.getVersion().then(function(v) {
+        document.getElementById('version-label').textContent = 'v' + v;
+      });
+    }
+  </script>
+</body>
+</html>

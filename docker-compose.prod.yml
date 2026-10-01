@@ -1,0 +1,93 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env.production}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env.production}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - prod_pgdata:/var/lib/postgresql/data
+    networks:
+      - prod_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env.production
+    environment:
+      HOST: db
+      PORT: 5432
+      USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env.production}
+      PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}
+    command:
+      - odoo
+      - --config=/etc/odoo/odoo.conf
+      - --db_host=db
+      - --db_port=5432
+      - --db_user=${POSTGRES_USER:?Set POSTGRES_USER in .env.production}
+      - --db_password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}
+      - --database=${POSTGRES_DB:?Set POSTGRES_DB in .env.production}
+      - --db-filter=^${POSTGRES_DB:?Set POSTGRES_DB in .env.production}$
+      - --admin_passwd=${ODOO_ADMIN_PASSWD:?Set ODOO_ADMIN_PASSWD in .env.production}
+      - --proxy-mode
+    volumes:
+      - prod_odoo_data:/var/lib/odoo
+      - ./config/odoo.prod.conf:/etc/odoo/odoo.conf:ro
+    networks:
+      - prod_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8069/web/login >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 60s
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      odoo:
+        condition: service_healthy
+    env_file:
+      - .env.production
+    environment:
+      ERP_DOMAIN: ${ERP_DOMAIN:?Set ERP_DOMAIN in .env.production}
+      APP_KEY: ${APP_KEY:?Set APP_KEY in .env.production}
+    ports:
+      # Only HTTPS — Cloudflare handles HTTP→HTTPS redirect at the edge
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Cloudflare Origin Certificate + Authenticated Origin Pull CA
+      - ./deploy/certs:/etc/caddy/certs:ro
+      - prod_caddy_data:/data
+      - prod_caddy_config:/config
+    networks:
+      - prod_net
+
+volumes:
+  prod_pgdata:
+  prod_odoo_data:
+  prod_caddy_data:
+  prod_caddy_config:
+
+networks:
+  prod_net:
+    driver: bridge

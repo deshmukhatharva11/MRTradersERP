@@ -3,7 +3,7 @@
 // =============================================================
 // Copyright (C) 2026 MR Traders
 //
-// Customizes the Odoo web login page (/web/login)
+// Customizes the MR Traders ERP login page (/web/login)
 // =============================================================
 
 // ── Brand variables ──────────────────────────────────────────
@@ -94,7 +94,7 @@ $mr-dark:      #0d2136;
 
 // ── Footer tagline ────────────────────────────────────────────
 .o_login_screen::after {
-    content: "Powered by MR Traders ERP";
+    content: "Powered by CodeZilla";
     position: fixed;
     bottom: 1rem;
     left: 0;

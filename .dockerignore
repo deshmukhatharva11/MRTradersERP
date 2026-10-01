@@ -1,0 +1,17 @@
+**/.git
+**/.github
+node_modules
+.env
+.env.production
+backups/
+*.log
+venv/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+odoo/.git/
+odoo/**/tests/
+odoo/**/static/tests/
+odoo/doc/
+odoo/debian/
+odoo/setup/

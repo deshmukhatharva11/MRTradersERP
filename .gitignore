@@ -1,6 +1,8 @@
 # ── Secrets & Local Config ────────────────────────────────────
 .env
 *.env.local
+.env.production
+backups/
 
 # ── Python ───────────────────────────────────────────────────
 __pycache__/
@@ -68,3 +70,17 @@ htmlcov/
 
 # ── Compiled translations ─────────────────────────────────────
 *.mo
+
+# ── Electron Desktop App ─────────────────────────────────────
+desktop-app/dist/
+desktop-app/out/
+desktop-app/node_modules/
+desktop-app/client-config.json
+
+# ── TLS Certificates / Keys (NEVER commit) ───────────────────
+deploy/certs/
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt

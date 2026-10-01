@@ -4,16 +4,17 @@
      Sets company name, logo reference, and initial config.
      ============================================================ -->
 <odoo>
-    <data noupdate="1">
+    <data>
 
         <!-- Update the default company with MR Traders branding -->
         <record id="base.main_company" model="res.company">
             <field name="name">MR Traders</field>
             <field name="website">https://mrtraders.pk</field>
-            <!-- Logo: place your logo at static/src/img/mr_traders_logo.png
-                 and update this field after first install via Settings > Companies -->
-            <!-- <field name="logo" type="base64" file="mr_traders/static/src/img/mr_traders_logo.png"/> -->
+            <field name="logo" type="base64" file="mr_traders/static/src/img/mr_traders_favicon.svg"/>
+            <field name="report_header">MR Traders ERP</field>
+            <field name="report_footer">Powered by CodeZilla</field>
         </record>
+        <function model="res.company" name="_apply_mr_traders_branding"/>
 
     </data>
 </odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="web.LoadingIndicator" t-inherit-mode="extension">
+        <xpath expr="//span[contains(@class, 'o_loading_indicator')]" position="replace">
+            <span class="o_loading_indicator" t-att-class="transition.className">Loading MR Traders ERP<t t-if="env.debug" t-esc="' (' + state.count + ')'" /></span>
+        </xpath>
+    </t>
+
+    <t t-inherit="web.NavBar" t-inherit-mode="extension">
+        <xpath expr="//nav" position="inside">
+            <img class="mr_traders_nav_logo" src="/mr_traders/static/src/img/mr_traders_favicon.svg" alt="MR Traders ERP"/>
+        </xpath>
+    </t>
+
+    <t t-inherit="res_config_edition" t-inherit-mode="extension">
+        <xpath expr="//h3" position="replace">
+            <h3 class="px-0">MR Traders ERP <t t-esc="serverVersion"/> (Community Edition)</h3>
+        </xpath>
+        <xpath expr="//div[@id='settings']/small" position="replace">
+            <small>Managed by <strong>Codezilla</strong></small>
+        </xpath>
+    </t>
+
+    <t t-inherit="web.InstallScopedApp" t-inherit-mode="extension">
+        <xpath expr="//a[@href='https://odoo.com']" position="replace">
+            <span class="d-flex align-items-center gap-2">
+                <img src="/mr_traders/static/src/img/mr_traders_favicon.svg" alt="MR Traders ERP" style="height: 24px; width: auto;"/>
+                <span>MR Traders ERP</span>
+            </span>
+        </xpath>
+    </t>
+</templates>

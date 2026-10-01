@@ -31,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: runtime
+      target: dev
     container_name: mrtraders_odoo
     restart: unless-stopped
     depends_on:

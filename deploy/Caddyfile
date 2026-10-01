@@ -1,0 +1,100 @@
+# =============================================================
+# MR Traders ERP — Hardened Caddyfile (Behind Cloudflare)
+# =============================================================
+# Security controls:
+#   - Cloudflare Origin Certificate (not Let's Encrypt)
+#   - Authenticated Origin Pulls (mTLS from Cloudflare)
+#   - x-app-key validation (defense in depth — also done at CF WAF)
+#   - /web/database/* blocked
+#   - Strict security headers (HSTS, CSP, permissions policy)
+#   - Rate limiting via Cloudflare (configured in CF dashboard)
+# =============================================================
+
+{$ERP_DOMAIN} {
+    # ── TLS: Cloudflare Origin Certificate ───────────────────
+    # Generate at: Cloudflare → SSL/TLS → Origin Server → Create Certificate
+    # Place the cert and key in the paths below on the host.
+    tls /etc/caddy/certs/origin.pem /etc/caddy/certs/origin.key {
+        # Authenticated Origin Pulls: only accept connections from Cloudflare
+        # Download the CA from:
+        # https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/set-up/zone-level/#certificate-value
+        client_auth {
+            mode          require_and_verify
+            trusted_ca_cert_file /etc/caddy/certs/cloudflare-origin-pull-ca.pem
+        }
+    }
+
+    # ── Block /web/database/* (Odoo admin panel) ─────────────
+    @dbmanager {
+        path /web/database/*
+        path /web/database
+    }
+    respond @dbmanager "Forbidden" 403 {
+        close
+    }
+
+    # ── Validate x-app-key header ────────────────────────────
+    # Defense in depth: Cloudflare WAF is the first line.
+    # This catches anything that bypasses CF (direct origin hit).
+    @missing_app_key {
+        not header x-app-key {$APP_KEY}
+    }
+    respond @missing_app_key "Forbidden" 403 {
+        close
+    }
+
+    # ── Security Headers ─────────────────────────────────────
+    header {
+        # HSTS — tell browsers to always use HTTPS
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+
+        # Prevent MIME-type sniffing
+        X-Content-Type-Options nosniff
+
+        # Deny framing (clickjacking protection)
+        X-Frame-Options DENY
+
+        # Control referrer information
+        Referrer-Policy strict-origin-when-cross-origin
+
+        # Content Security Policy (Odoo-compatible)
+        # NOTE: Odoo requires 'unsafe-inline' for scripts/styles
+        # due to session-info injection and OWL framework.
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' wss://{$ERP_DOMAIN} ws://{$ERP_DOMAIN}; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
+
+        # Permissions Policy — deny all dangerous APIs
+        Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+
+        # Prevent cross-domain policies (Flash/PDF)
+        X-Permitted-Cross-Domain-Policies none
+
+        # Remove server identification
+        -Server
+        -X-Powered-By
+    }
+
+    # ── Compression ──────────────────────────────────────────
+    encode gzip
+
+    # ── Reverse Proxy ────────────────────────────────────────
+    # WebSocket (Odoo longpolling / bus)
+    @websocket {
+        path /websocket*
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @websocket odoo:8072
+
+    # All other traffic → Odoo web server
+    reverse_proxy odoo:8069 {
+        # Pass real client IP (Cloudflare sets CF-Connecting-IP)
+        header_up X-Real-IP {header.CF-Connecting-IP}
+        header_up X-Forwarded-For {header.CF-Connecting-IP}
+        header_up X-Forwarded-Proto {scheme}
+        header_up Host {host}
+
+        # Strip the x-app-key before forwarding to Odoo
+        # (Odoo doesn't need it — prevents leaking to logs/addons)
+        header_up -x-app-key
+    }
+}

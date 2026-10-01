@@ -4,7 +4,7 @@
 # ============================================================
 
 # --------------- Build stage: compile Python deps -----------
-FROM python:3.12-slim AS builder
+FROM python:3.12-slim-bookworm AS builder
 
 WORKDIR /build
 
@@ -33,7 +33,7 @@ RUN pip install --upgrade pip && \
     pip install --prefix=/install -r /build/requirements.txt
 
 # --------------- Runtime stage ---------------------------------
-FROM python:3.12-slim AS runtime
+FROM python:3.12-slim-bookworm AS base
 
 LABEL maintainer="MR Traders ERP <admin@mrtraders.local>" \
       version="19.0" \
@@ -49,6 +49,7 @@ ENV LANG=C.UTF-8 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # PostgreSQL client
     libpq5 \
+    postgresql-client \
     # XML/XSLT
     libxml2 \
     libxslt1.1 \
@@ -87,27 +88,30 @@ RUN mkdir -p \
     /var/log/odoo \
     /etc/odoo
 
-# Copy Odoo source (from the cloned repo in the build context)
-COPY --chown=odoo:odoo odoo/ /opt/odoo/odoo/
-
-# Copy custom addons
-COPY --chown=odoo:odoo custom-addons/ /opt/odoo/custom-addons/
-
-# Copy Odoo config
-COPY --chown=odoo:odoo config/odoo.conf /etc/odoo/odoo.conf
-
-# Set up Odoo as a proper Python package/entry point
-WORKDIR /opt/odoo/odoo
-
-# Fix permissions
 RUN chown -R odoo:odoo /var/lib/odoo /var/log/odoo /etc/odoo
+
+WORKDIR /opt/odoo/odoo
 
 # Entrypoint script
 COPY --chown=root:root docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-EXPOSE 8069 8071 8072
+FROM base AS dev
 
+USER odoo
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["odoo"]
+
+FROM base AS runtime
+
+# Production image includes source; development mounts it from the workspace.
+COPY --chown=odoo:odoo odoo/ /opt/odoo/odoo/
+COPY --chown=odoo:odoo custom-addons/ /opt/odoo/custom-addons/
+COPY --chown=odoo:odoo config/odoo.conf /etc/odoo/odoo.conf
+
+RUN chown -R odoo:odoo /var/lib/odoo /var/log/odoo /etc/odoo
+
+EXPOSE 8069 8071 8072
 VOLUME ["/var/lib/odoo", "/opt/odoo/custom-addons"]
 
 USER odoo

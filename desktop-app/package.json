@@ -1,0 +1,35 @@
+{
+  "name": "mr-traders-erp",
+  "version": "1.0.0",
+  "description": "MR Traders ERP — Hardened Desktop Client",
+  "author": "MR Traders <admin@mrtraders.pk>",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:dev": "cross-env NODE_ENV=development electron .",
+    "build": "node scripts/build.js",
+    "build:win": "electron-builder --win --x64",
+    "build:win:unsigned": "cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win --x64",
+    "set-fuses": "node scripts/set-fuses.js",
+    "postbuild:win": "npm run set-fuses",
+    "lint": "eslint src/",
+    "audit": "npm audit --production",
+    "clean": "rimraf dist/ out/"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.0"
+  },
+  "devDependencies": {
+    "@electron/fuses": "^1.8.0",
+    "cross-env": "^7.0.3",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.0",
+    "eslint": "^9.0.0",
+    "rimraf": "^6.0.0"
+  },
+  "build": {
+    "extends": "./electron-builder.yml"
+  }
+}

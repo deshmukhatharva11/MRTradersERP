@@ -1,19 +1,15 @@
 # ── Branding override files ───────────────────────────────────
-# Place your logo and favicon here before installing the module.
+# Branding assets used by the MR Traders ERP addon.
 #
-# Expected files:
-#   mr_traders_logo.png     - 300×100px PNG, company logo (navbar + login)
-#   mr_traders_favicon.ico  - 32×32 favicon
-#   mr_traders_favicon.png  - 256×256 PNG fallback favicon
+# Files:
+#   mr_traders_favicon.svg  - single MR monogram used everywhere
 #
-# After adding images, uncomment the logo field in:
-#   data/res_company_data.xml
+# The addon applies the logo and report attribution to the existing main
+# company during module update. No Odoo core file needs to be edited.
 #
-# Logo specs for Odoo:
+# Logo specs:
 #   - Navbar logo:  max-height 40px (auto-scaled by CSS)
 #   - Login logo:   max-height 80px (auto-scaled by CSS)
 #   - Recommended: SVG or high-res PNG with transparent background
 #
-# Favicon update:
-#   Edit odoo/addons/web/static/img/favicon.ico  (direct source override)
-#   — OR — override the favicon QWeb template in views/
+# The favicon and page title are overridden by views/branding_templates.xml.

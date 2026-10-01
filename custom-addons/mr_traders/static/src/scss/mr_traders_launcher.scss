@@ -1,0 +1,256 @@
+.mr_traders_launcher {
+    position: fixed;
+    inset: 0;
+    z-index: 1040;
+    overflow: auto;
+    background: #f3f6fa;
+    color: #162b40;
+}
+
+.mr_traders_launcher_panel {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    background: linear-gradient(135deg, #edf3f8 0%, #ffffff 48%, #f2f6fa 100%);
+}
+
+.mr_traders_launcher_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding: 1.75rem clamp(1.25rem, 5vw, 5rem);
+    background: #102a43;
+    box-shadow: 0 8px 24px rgba(16, 42, 67, 0.16);
+    color: #ffffff;
+}
+
+.mr_traders_launcher_user {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #ffffff;
+    font-size: 0.82rem;
+    white-space: nowrap;
+
+    img {
+        width: 34px;
+        height: 34px;
+        object-fit: contain;
+    }
+}
+
+.mr_traders_launcher_logout {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    padding: 0.45rem 0.7rem;
+    background: transparent;
+    color: #ffffff;
+    font-size: 0.76rem;
+
+    &:hover,
+    &:focus-visible {
+        border-color: #ffbe20;
+        color: #ffbe20;
+        outline: 0;
+    }
+}
+
+.mr_traders_launcher_identity {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    img {
+        width: 58px;
+        height: 58px;
+        object-fit: contain;
+    }
+
+    span,
+    h1 {
+        display: block;
+        margin: 0;
+    }
+
+    span {
+        color: #ffbe20;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+    }
+
+    h1 {
+        margin-top: 0.2rem;
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+}
+
+.mr_traders_launcher_search {
+    display: flex;
+    width: 300px;
+    max-width: 100%;
+    align-items: center;
+    gap: 0.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    background: rgba(255, 255, 255, 0.1);
+
+    i {
+        color: #ffbe20;
+    }
+
+    input {
+        min-width: 0;
+        flex: 1;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: #ffffff;
+
+        &::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+    }
+}
+
+.mr_traders_launcher_main {
+    width: calc(100% - 2.5rem);
+    max-width: 1280px;
+    flex: 1;
+    margin: 0 auto;
+    padding: 2.5rem 0 3rem;
+}
+
+.mr_traders_launcher_intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+
+    h2 {
+        margin: 0;
+        color: #102a43;
+        font-size: 1.6rem;
+        font-weight: 750;
+    }
+}
+
+.mr_traders_launcher_eyebrow {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #708196;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.mr_traders_launcher_count {
+    color: #708196;
+    font-size: 0.82rem;
+}
+
+.mr_traders_launcher_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.mr_traders_launcher_card {
+    display: flex;
+    min-height: 126px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.8rem;
+    border: 1px solid #dce5ee;
+    border-radius: 8px;
+    padding: 0.9rem;
+    background: #ffffff;
+    color: #162b40;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+
+    &:hover,
+    &:focus-visible {
+        border-color: #ffbe20;
+        box-shadow: 0 10px 24px rgba(16, 42, 67, 0.12);
+        outline: 0;
+        transform: translateY(-2px);
+    }
+
+    strong {
+        font-size: 0.98rem;
+        text-align: center;
+    }
+
+    > i {
+        position: absolute;
+        right: 0.85rem;
+        top: 0.85rem;
+        color: #a2afbc;
+        font-size: 0.8rem;
+    }
+}
+
+.mr_traders_launcher_icon {
+    display: grid;
+    width: 56px;
+    height: 56px;
+    place-items: center;
+    border-radius: 12px;
+    background: #f3f6fa;
+
+    img {
+        width: 46px;
+        height: 46px;
+        object-fit: contain;
+    }
+}
+
+.mr_traders_launcher_empty {
+    border: 1px dashed #cbd8e5;
+    border-radius: 8px;
+    padding: 3rem;
+    color: #708196;
+    text-align: center;
+}
+
+.mr_traders_launcher_footer {
+    padding: 1.25rem;
+    color: #7c8b9b;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-align: center;
+}
+
+@media (max-width: 720px) {
+    .mr_traders_launcher_header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .mr_traders_launcher_search {
+        width: 100%;
+    }
+
+    .mr_traders_launcher_user {
+        justify-content: space-between;
+    }
+
+    .mr_traders_launcher_main {
+        width: calc(100% - 1.5rem);
+        max-width: 640px;
+        padding-top: 1.5rem;
+    }
+
+    .mr_traders_launcher_intro {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

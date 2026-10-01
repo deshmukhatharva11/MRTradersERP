@@ -1,7 +1,7 @@
+#!/bin/bash
 # =============================================================
 # MR Traders ERP — Docker Entrypoint
 # =============================================================
-#!/bin/bash
 set -e
 
 # Wait for PostgreSQL to be ready (belt-and-suspenders beyond healthcheck)

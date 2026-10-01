@@ -1,0 +1,87 @@
+# =============================================================
+# MR Traders ERP — Electron Builder Configuration
+# =============================================================
+# Security notes:
+#   - ASAR packaging is ON (requirement 10)
+#   - Code signing requires CSC_LINK and CSC_KEY_PASSWORD env vars
+#   - electron-updater uses the publish config for auto-updates
+#   - Unnecessary files are excluded from the ASAR
+# =============================================================
+
+appId: com.mrtraders.erp
+productName: MR Traders ERP
+copyright: Copyright © 2026 MR Traders
+
+# ── Directories ──────────────────────────────────────────────
+directories:
+  buildResources: assets
+  output: dist
+
+# ── ASAR Packaging [REQ 10] ──────────────────────────────────
+asar: true
+asarUnpack:
+  # Unpack native modules if any (none currently)
+  - "**/*.node"
+
+# ── Files to include ─────────────────────────────────────────
+files:
+  - "src/**/*"
+  - "assets/**/*"
+  - "!**/*.map"
+  - "!**/node_modules/*/{CHANGELOG.md,README.md,readme.md,LICENSE,license,LICENCE}"
+  - "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples,spec,specs}"
+  - "!**/node_modules/.cache"
+  - "!**/*.{ts,tsx,map,md}"
+
+# ── Extra files (outside ASAR, alongside exe) ────────────────
+# client-config.json ships alongside the exe for per-client builds
+extraResources:
+  - from: "client-config.json"
+    to: "../client-config.json"
+    filter:
+      - "*.json"
+
+# ── Windows Configuration ────────────────────────────────────
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: assets/icon.ico
+  # Code signing — set CSC_LINK and CSC_KEY_PASSWORD in CI/CD
+  # signingHashAlgorithms:
+  #   - sha256
+  # signDlls: true
+  requestedExecutionLevel: asInvoker
+  artifactName: "MR-Traders-ERP-${version}-Setup.${ext}"
+
+# ── NSIS Installer ───────────────────────────────────────────
+nsis:
+  oneClick: true
+  perMachine: false
+  allowToChangeInstallationDirectory: false
+  deleteAppDataOnUninstall: true
+  installerIcon: assets/icon.ico
+  uninstallerIcon: assets/icon.ico
+  installerHeaderIcon: assets/icon.ico
+  shortcutName: MR Traders ERP
+
+# ── Auto-Update [REQ 9] ─────────────────────────────────────
+# Configure for your release channel:
+#   Option A: GitHub Releases
+#   Option B: Generic server (self-hosted)
+publish:
+  - provider: generic
+    url: "https://updates.mrtraders.site/desktop"
+    channel: latest
+    # For GitHub releases, use:
+    # provider: github
+    # owner: mr-traders
+    # repo: erp-desktop-releases
+
+# ── Compression ──────────────────────────────────────────────
+compression: maximum
+
+# ── Electron Builder Hooks ───────────────────────────────────
+# afterSign: scripts/notarize.js   # macOS notarization (if needed later)
+afterPack: scripts/set-fuses.js

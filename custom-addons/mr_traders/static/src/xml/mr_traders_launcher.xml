@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="mr_traders.ApplicationLauncher">
+        <section t-if="state.visible" class="mr_traders_launcher" aria-label="MR Traders ERP application launcher">
+            <div class="mr_traders_launcher_panel">
+                <header class="mr_traders_launcher_header">
+                    <div class="mr_traders_launcher_identity">
+                        <img src="/mr_traders/static/src/img/mr_traders_favicon.svg" alt="MR Traders ERP"/>
+                        <div>
+                            <span>MR TRADERS ERP</span>
+                            <h1>Application Launcher</h1>
+                        </div>
+                    </div>
+                    <div class="mr_traders_launcher_search">
+                        <i class="fa fa-search" aria-hidden="true"/>
+                        <input type="search" placeholder="Search applications" aria-label="Search applications" t-att-value="state.query" t-on-input="onSearch"/>
+                    </div>
+                    <div class="mr_traders_launcher_user">
+                        <img src="/mr_traders/static/src/img/mr_traders_favicon.svg" alt="MR Traders ERP user logo"/>
+                        <span t-esc="currentUser.name or 'ERP User'"/>
+                        <button type="button" class="mr_traders_launcher_logout" t-on-click="logout">Log out</button>
+                    </div>
+                </header>
+
+                <main class="mr_traders_launcher_main">
+                    <div class="mr_traders_launcher_intro">
+                        <div>
+                            <span class="mr_traders_launcher_eyebrow">Workspace</span>
+                            <h2>Select a business application</h2>
+                        </div>
+                        <span class="mr_traders_launcher_count"><t t-esc="applications.length"/> available</span>
+                    </div>
+
+                    <div t-if="applications.length" class="mr_traders_launcher_grid">
+                        <button t-foreach="applications" t-as="application" t-key="application.id" type="button" class="mr_traders_launcher_card" t-on-click="() => this.openApplication(application)">
+                            <span class="mr_traders_launcher_icon">
+                                <img t-att-src="application.webIconData or '/web/static/img/default_icon_app.png'" t-att-alt="application.name"/>
+                            </span>
+                            <strong t-esc="application.name"/>
+                            <i class="fa fa-arrow-right" aria-hidden="true"/>
+                        </button>
+                    </div>
+                    <p t-else="" class="mr_traders_launcher_empty">No accessible applications match your search.</p>
+                </main>
+
+                <footer class="mr_traders_launcher_footer">Managed by CodeZilla</footer>
+            </div>
+        </section>
+    </t>
+</templates>

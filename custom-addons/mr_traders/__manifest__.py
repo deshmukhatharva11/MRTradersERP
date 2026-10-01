@@ -37,6 +37,8 @@ keeping MR Traders customizations isolated and upgrade-safe.
         'security/ir.model.access.csv',
         # Views
         'views/res_company_views.xml',
+        'views/branding_templates.xml',
+        'views/mail_branding_templates.xml',
         # Data
         'data/res_company_data.xml',
     ],
@@ -44,6 +46,12 @@ keeping MR Traders customizations isolated and upgrade-safe.
     'assets': {
         'web.assets_backend': [
             'mr_traders/static/src/scss/mr_traders_theme.scss',
+            'mr_traders/static/src/scss/mr_traders_branding.scss',
+            'mr_traders/static/src/scss/mr_traders_launcher.scss',
+            'mr_traders/static/src/js/mr_traders_branding.js',
+            'mr_traders/static/src/js/mr_traders_launcher.js',
+            'mr_traders/static/src/xml/mr_traders_branding.xml',
+            'mr_traders/static/src/xml/mr_traders_launcher.xml',
         ],
         'web.assets_frontend': [
             'mr_traders/static/src/scss/mr_traders_login.scss',
