@@ -38,7 +38,11 @@ export class MRTradersLauncher extends Component {
     }
 
     logout() {
-        window.location.href = "/web/session/logout";
+        if (window.electronAPI && window.electronAPI.logout) {
+            window.electronAPI.logout();
+        } else {
+            window.location.href = "/web/session/logout";
+        }
     }
 }
 

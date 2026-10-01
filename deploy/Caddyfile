@@ -11,18 +11,7 @@
 # =============================================================
 
 {$ERP_DOMAIN} {
-    # ── TLS: Cloudflare Origin Certificate ───────────────────
-    # Generate at: Cloudflare → SSL/TLS → Origin Server → Create Certificate
-    # Place the cert and key in the paths below on the host.
-    tls /etc/caddy/certs/origin.pem /etc/caddy/certs/origin.key {
-        # Authenticated Origin Pulls: only accept connections from Cloudflare
-        # Download the CA from:
-        # https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/set-up/zone-level/#certificate-value
-        client_auth {
-            mode          require_and_verify
-            trusted_ca_cert_file /etc/caddy/certs/cloudflare-origin-pull-ca.pem
-        }
-    }
+    # Automatic TLS via Let's Encrypt (default in Caddy)
 
     # ── Block /web/database/* (Odoo admin panel) ─────────────
     @dbmanager {
@@ -58,9 +47,8 @@
         Referrer-Policy strict-origin-when-cross-origin
 
         # Content Security Policy (Odoo-compatible)
-        # NOTE: Odoo requires 'unsafe-inline' for scripts/styles
-        # due to session-info injection and OWL framework.
-        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' wss://{$ERP_DOMAIN} ws://{$ERP_DOMAIN}; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
+        # Content Security Policy (Odoo-compatible, OWL requires unsafe-eval and unsafe-inline)
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' wss://{$ERP_DOMAIN} ws://{$ERP_DOMAIN}; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
 
         # Permissions Policy — deny all dangerous APIs
         Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"

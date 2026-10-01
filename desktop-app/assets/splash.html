@@ -162,26 +162,52 @@
   <div class="version" id="version-label"></div>
 
   <script>
-    // Determine mode from URL query
     const params = new URLSearchParams(window.location.search);
     const mode = params.get('mode') || 'loading';
 
+    const loadingEl = document.getElementById('loading');
+    const offlineEl = document.getElementById('offline');
+    const statusText = document.querySelector('.status-text');
+    const offlineMsg = document.querySelector('.offline-message');
+
+    function showLoading(msg) {
+      loadingEl.classList.remove('hidden');
+      offlineEl.classList.add('hidden');
+      if (statusText) statusText.textContent = msg || 'Connecting to server…';
+    }
+
+    function showOffline(msg) {
+      loadingEl.classList.add('hidden');
+      offlineEl.classList.remove('hidden');
+      if (msg && offlineMsg) offlineMsg.innerHTML = msg;
+    }
+
+    // Set initial view according to mode
     if (mode === 'offline') {
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('offline').classList.remove('hidden');
+      showOffline();
+    } else {
+      showLoading('Connecting to server…');
+    }
+
+    // Live status updates from Electron main process
+    if (window.erpBridge && window.erpBridge.onSplashStatus) {
+      window.erpBridge.onSplashStatus(function(status) {
+        showLoading(status);
+      });
     }
 
     function retry() {
-      document.getElementById('offline').classList.add('hidden');
-      document.getElementById('loading').classList.remove('hidden');
-      // Tell main process to retry (via location reload — main process intercepts)
-      window.location.reload();
+      showLoading('Connecting to server…');
+      if (window.erpBridge && window.erpBridge.retryConnection) {
+        window.erpBridge.retryConnection();
+      }
     }
 
-    // Show version if erpBridge is available
+    // Show version
     if (window.erpBridge && window.erpBridge.getVersion) {
       window.erpBridge.getVersion().then(function(v) {
-        document.getElementById('version-label').textContent = 'v' + v;
+        const el = document.getElementById('version-label');
+        if (el) el.textContent = 'v' + v;
       });
     }
   </script>

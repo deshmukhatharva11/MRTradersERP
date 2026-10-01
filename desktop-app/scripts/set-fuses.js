@@ -52,7 +52,7 @@ async function setFuses(context) {
     [FuseV1Options.EnableCookieEncryption]: true,
 
     // Grant file access to file:// URIs (needed for splash.html)
-    [FuseV1Options.GrantFileProtocolExtraPrivileges]: false,
+    [FuseV1Options.GrantFileProtocolExtraPrivileges]: true,
   });
 
   console.log('✅ Electron Fuses set successfully.\n');

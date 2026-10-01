@@ -24,10 +24,9 @@ const CREDENTIAL_FILE = path.join(USER_DATA_DIR, '.credentials');
 function findConfigFile() {
   const candidates = [
     path.join(USER_DATA_DIR, 'client-config.json'),
-    path.join(app.isPackaged
-      ? path.dirname(process.execPath)
-      : path.join(__dirname, '..'),
-      'client-config.json'),
+    path.join(path.dirname(process.execPath), 'client-config.json'),
+    path.join(process.resourcesPath, 'client-config.json'),
+    path.join(__dirname, '..', 'client-config.json'),
   ];
   for (const p of candidates) {
     if (fs.existsSync(p)) return p;

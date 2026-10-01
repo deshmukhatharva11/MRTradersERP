@@ -18,6 +18,7 @@ const INVOKE_CHANNELS = new Set([
 
 const SEND_CHANNELS = new Set([
   'auth:logout',
+  'app:retry-connection',
 ]);
 
 // Main → Renderer  (one-way push)
@@ -26,6 +27,7 @@ const RECEIVE_CHANNELS = new Set([
   'app:update-downloaded',
   'app:offline',
   'app:online',
+  'app:splash-status',
   'auth:session-expired',
 ]);
 
@@ -52,6 +54,13 @@ contextBridge.exposeInMainWorld('erpBridge', {
     }
   },
 
+  /**
+   * Tell the main process to retry loading the ERP (used by offline splash).
+   */
+  retryConnection: () => {
+    ipcRenderer.send('app:retry-connection');
+  },
+
   // ── Event listeners (Main → Renderer) ─────────────────────
 
   /**
@@ -74,6 +83,17 @@ contextBridge.exposeInMainWorld('erpBridge', {
     const handler = () => callback();
     ipcRenderer.on('app:online', handler);
     return () => ipcRenderer.removeListener('app:online', handler);
+  },
+
+  /**
+   * @param {Function} callback - Called when main process sends splash status updates.
+   * @returns {Function} unsubscribe
+   */
+  onSplashStatus: (callback) => {
+    if (typeof callback !== 'function') return () => {};
+    const handler = (_event, status) => callback(status);
+    ipcRenderer.on('app:splash-status', handler);
+    return () => ipcRenderer.removeListener('app:splash-status', handler);
   },
 
   /**

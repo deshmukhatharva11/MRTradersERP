@@ -27,6 +27,7 @@ asarUnpack:
 files:
   - "src/**/*"
   - "assets/**/*"
+  - "client-config.json"
   - "!**/*.map"
   - "!**/node_modules/*/{CHANGELOG.md,README.md,readme.md,LICENSE,license,LICENCE}"
   - "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples,spec,specs}"
@@ -44,43 +45,14 @@ extraResources:
 # ── Windows Configuration ────────────────────────────────────
 win:
   target:
-    - target: nsis
+    - target: portable
       arch:
         - x64
   icon: assets/icon.ico
-  # Code signing — set CSC_LINK and CSC_KEY_PASSWORD in CI/CD
-  # signingHashAlgorithms:
-  #   - sha256
-  # signDlls: true
   requestedExecutionLevel: asInvoker
-  artifactName: "MR-Traders-ERP-${version}-Setup.${ext}"
-
-# ── NSIS Installer ───────────────────────────────────────────
-nsis:
-  oneClick: true
-  perMachine: false
-  allowToChangeInstallationDirectory: false
-  deleteAppDataOnUninstall: true
-  installerIcon: assets/icon.ico
-  uninstallerIcon: assets/icon.ico
-  installerHeaderIcon: assets/icon.ico
-  shortcutName: MR Traders ERP
-
-# ── Auto-Update [REQ 9] ─────────────────────────────────────
-# Configure for your release channel:
-#   Option A: GitHub Releases
-#   Option B: Generic server (self-hosted)
-publish:
-  - provider: generic
-    url: "https://updates.mrtraders.site/desktop"
-    channel: latest
-    # For GitHub releases, use:
-    # provider: github
-    # owner: mr-traders
-    # repo: erp-desktop-releases
 
 # ── Compression ──────────────────────────────────────────────
-compression: maximum
+compression: store
 
 # ── Electron Builder Hooks ───────────────────────────────────
 # afterSign: scripts/notarize.js   # macOS notarization (if needed later)

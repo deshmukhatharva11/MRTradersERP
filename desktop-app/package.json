@@ -1,8 +1,9 @@
 {
   "name": "mr-traders-erp",
+  "productName": "MR Traders ERP",
   "version": "1.0.0",
-  "description": "MR Traders ERP — Hardened Desktop Client",
-  "author": "MR Traders <admin@mrtraders.pk>",
+  "description": "MR Traders ERP — Desktop Client",
+  "author": "MR Traders",
   "license": "UNLICENSED",
   "private": true,
   "main": "src/main.js",
