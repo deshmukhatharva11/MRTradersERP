@@ -45,7 +45,6 @@ services:
       - --db_password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}
       - --database=${POSTGRES_DB:?Set POSTGRES_DB in .env.production}
       - --db-filter=^${POSTGRES_DB:?Set POSTGRES_DB in .env.production}$
-      - --admin_passwd=${ODOO_ADMIN_PASSWD:?Set ODOO_ADMIN_PASSWD in .env.production}
       - --proxy-mode
     volumes:
       - prod_odoo_data:/var/lib/odoo
